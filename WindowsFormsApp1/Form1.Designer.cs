@@ -109,6 +109,7 @@
             // txtCPF
             // 
             this.txtCPF.Location = new System.Drawing.Point(165, 132);
+            this.txtCPF.Mask = "000.000.000-00";
             this.txtCPF.Name = "txtCPF";
             this.txtCPF.Size = new System.Drawing.Size(152, 20);
             this.txtCPF.TabIndex = 6;

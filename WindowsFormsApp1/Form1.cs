@@ -1,7 +1,9 @@
-﻿using System;
+﻿using MySql.Data.MySqlClient;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
+using System.Data.SqlClient;
 using System.Drawing;
 using System.Linq;
 using System.Text;
@@ -12,6 +14,9 @@ namespace WindowsFormsApp1
 {
     public partial class main_frm : Form
     {
+        Connection connection = new Connection();
+        MySqlCommand cmd = new MySqlCommand();
+        string sql;
         public main_frm()
         {
             InitializeComponent();
@@ -24,7 +29,7 @@ namespace WindowsFormsApp1
             DesabilitarBotoes();
             btnNovo.Enabled = true;
 
-        
+
         }
 
         private void label1_Click(object sender, EventArgs e)
@@ -39,7 +44,7 @@ namespace WindowsFormsApp1
 
         private void txtTittle_Click(object sender, EventArgs e)
         {
-            
+
         }
 
         private void btnNovo_Click(object sender, EventArgs e)
@@ -49,19 +54,55 @@ namespace WindowsFormsApp1
             HabilitarBotoes();
             btnNovo.Enabled = false;
 
+
+
+
         }
 
         private void button2_Click(object sender, EventArgs e)
         {
+
+            if (txtNome.Text.ToString().Trim() == " ")
+            {
+                MessageBox.Show("Nome inválido. ");
+                txtNome.Text = "";
+                txtNome.Focus();    
+                return;
+            }
+            if (txtCPF.Text.ToString().Trim() == "   ,   ,   -" || txtCPF.Text.Length > 14)
+            {
+                MessageBox.Show("CPF Inválido");
+                txtCPF.Focus();
+                return; 
+            }
+
+            connection.openConnection();
+            sql = "INSERT INTO cliente (Nome, Endereco, CPF, Telefone) VALUES (@Nome, @Endereco, @CPF, @Telefone)";
+            cmd = new MySqlCommand(sql, connection.connection);
+        
+            cmd.Parameters.AddWithValue("@Nome", txtNome.Text);
+            cmd.Parameters.AddWithValue("@Endereco", txtEndereco.Text);
+            cmd.Parameters.AddWithValue("@CPF", txtCPF.Text);
+            cmd.Parameters.AddWithValue("@Telefone", txtTel.Text);
+
+            cmd.ExecuteNonQuery();
+            connection.closeConnection();
+
             LimpaCampo();
             DesabilitaCampo();
             DesabilitarBotoes();
             btnNovo.Enabled = true;
+
+
+
+
+
+
         }
 
         private void txtNome_TextChanged(object sender, EventArgs e)
         {
-        
+
         }
 
         private void txtEndereco_TextChanged(object sender, EventArgs e)
@@ -83,16 +124,16 @@ namespace WindowsFormsApp1
         {
             LimpaCampo();
             DesabilitaCampo();
-            DesabilitarBotoes();   
-            btnNovo.Enabled=true;
+            DesabilitarBotoes();
+            btnNovo.Enabled = true;
         }
 
         private void btnCancelar_Click(object sender, EventArgs e)
         {
             DesabilitarBotoes();
             btnNovo.Enabled = true;
-            DesabilitaCampo();  
-            LimpaCampo();   
+            DesabilitaCampo();
+            LimpaCampo();
         }
 
         private void DesabilitarBotoes()
@@ -106,19 +147,19 @@ namespace WindowsFormsApp1
         private void HabilitarBotoes()
         {
             btnNovo.Enabled = true;
-            btnSalvar.Enabled = true;   
-            btnExcluir.Enabled = true;  
-            btnCancelar.Enabled = true; 
+            btnSalvar.Enabled = true;
+            btnExcluir.Enabled = true;
+            btnCancelar.Enabled = true;
         }
 
-        private void DesabilitaCampo() 
+        private void DesabilitaCampo()
         {
             txtNome.Enabled = false;
-            txtEndereco.Enabled = false;    
-            txtCPF.Enabled = false; 
+            txtEndereco.Enabled = false;
+            txtCPF.Enabled = false;
             txtTel.Enabled = false;
 
-           
+
         }
 
         private void HabilitaCampo()
@@ -129,13 +170,13 @@ namespace WindowsFormsApp1
             txtTel.Enabled = true;
         }
 
-        private void LimpaCampo() 
-        { 
+        private void LimpaCampo()
+        {
             txtNome.Text = string.Empty;
             txtEndereco.Text = string.Empty;
-            txtCPF.Text = string.Empty; 
-            txtTel.Text = string.Empty; 
-      
+            txtCPF.Text = string.Empty;
+            txtTel.Text = string.Empty;
+
         }
     }
 }
